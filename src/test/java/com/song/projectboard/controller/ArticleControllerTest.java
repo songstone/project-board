@@ -21,7 +21,6 @@ class ArticleControllerTest {
         this.mvc = mvc;
     }
 
-    @Disabled("구현 예정")
     @DisplayName("[view][GET] 게시글 리스트 페이지")
     @Test
     void articles_list_view() throws Exception {
@@ -30,7 +29,7 @@ class ArticleControllerTest {
         //when & then
         mvc.perform(get("/articles"))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.TEXT_HTML))
+            .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
             .andExpect(view().name("articles/index"))
             .andExpect(model().attributeExists("articles"));
     }
