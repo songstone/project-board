@@ -34,7 +34,6 @@ class ArticleControllerTest {
             .andExpect(model().attributeExists("articles"));
     }
 
-    @Disabled("구현 예정")
     @DisplayName("[view][GET] 게시글 상세 페이지")
     @Test
     void articles_select_view() throws Exception {
@@ -43,7 +42,7 @@ class ArticleControllerTest {
         //when & then
         mvc.perform(get("/articles/1"))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.TEXT_HTML))
+            .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
             .andExpect(view().name("articles/detail"))
             .andExpect(model().attributeExists("article"))
             .andExpect(model().attributeExists("articleComments"));
