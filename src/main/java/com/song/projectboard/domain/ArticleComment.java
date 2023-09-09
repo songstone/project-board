@@ -1,14 +1,8 @@
 package com.song.projectboard.domain;
 
 import lombok.*;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Getter
 @ToString
@@ -21,7 +15,8 @@ import java.time.LocalDateTime;
 @Entity
 public class ArticleComment extends AuditingFields {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Setter
@@ -38,6 +33,7 @@ public class ArticleComment extends AuditingFields {
         this.article = article;
         this.content = content;
     }
+
     public static ArticleComment of(Article article, String comment) {
         return new ArticleComment(article, comment);
     }
