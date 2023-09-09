@@ -1,3 +1,7 @@
+-- 유저
+insert into user_account (user_id, user_password, nickname, email, memo, created_by, created_at, modified_by, modified_at) values
+                                                                                                                               ('song', 'song1234' , 'devsong', 'devsong@naver.com', 'song song song', 'song' , now() , 'song' , now());
+
 -- 200 게시글
 insert into article (title, content, hashtag, created_by, created_at, modified_by, modified_at) values ('Donec semper sapien a libero.', 'Maecenas leo odio, condimentum id, luctus nec, molestie sed, justo. Pellentesque viverra pede ac diam. Cras pellentesque volutpat dui.', null, 'Frankie', '2023-07-26 20:30:52', 'Boigie', '2023-07-15 02:34:09');
 insert into article (title, content, hashtag, created_by, created_at, modified_by, modified_at) values ('Vivamus vestibulum sagittis sapien.', 'Quisque id justo sit amet sapien dignissim vestibulum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nulla dapibus dolor vel est. Donec odio justo, sollicitudin ut, suscipit a, feugiat et, eros.', 'rcassedy1@goo.gl', 'Bruis', '2023-07-04 03:58:15', 'Reuben', '2023-08-26 17:40:22');
