@@ -1,7 +1,6 @@
 package com.song.projectboard.domain;
 
 import lombok.*;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.LinkedHashSet;
