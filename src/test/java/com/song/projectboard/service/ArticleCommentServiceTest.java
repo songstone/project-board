@@ -2,9 +2,11 @@ package com.song.projectboard.service;
 
 import com.song.projectboard.domain.Article;
 import com.song.projectboard.domain.ArticleComment;
+import com.song.projectboard.domain.UserAccount;
 import com.song.projectboard.dto.ArticleCommentDto;
 import com.song.projectboard.repository.ArticleCommentRepository;
 import com.song.projectboard.repository.ArticleRepository;
+import com.song.projectboard.repository.UserAccountRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,7 +42,7 @@ class ArticleCommentServiceTest {
         Long articleId = 1L;
 
         given(articleRepository.findById(articleId)).willReturn(
-            Optional.of(Article.of("title", "content", "#hashtag" )));
+            Optional.of(Article.of(null,"title", "content", "#hashtag")));
 
         List<ArticleCommentDto> articleComments = articleCommentService.searchArticleComments(articleId);
 

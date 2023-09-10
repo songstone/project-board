@@ -4,6 +4,7 @@ import com.song.projectboard.domain.type.SearchType;
 import com.song.projectboard.dto.ArticleDto;
 import com.song.projectboard.dto.ArticleUpdateDto;
 import com.song.projectboard.repository.ArticleRepository;
+import com.song.projectboard.repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.util.List;
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
+    private final UserAccountRepository userAccountRepository;
 
     @Transactional(readOnly = true)
     public Page<ArticleDto> searchArticles(SearchType searchType, String keyword) {
