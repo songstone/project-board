@@ -23,12 +23,12 @@ public record ArticleWithCommentsDto(
         return new ArticleWithCommentsDto(id, userAccountDto, articleCommentDtos, title, content, hashtag, createdAt, createdBy, modifiedAt, modifiedBy);
     }
 
-    public static ArticleWithCommentsDto from(Article entity) {
+    public static ArticleWithCommentsDto fromEntity(Article entity) {
         return new ArticleWithCommentsDto(
             entity.getId(),
-            UserAccountDto.from(entity.getUserAccount()),
+            UserAccountDto.fromEntity(entity.getUserAccount()),
             entity.getArticleComments().stream()
-                .map(ArticleCommentDto::from)
+                .map(ArticleCommentDto::fromEntity)
                 .collect(Collectors.toCollection(LinkedHashSet::new)),
             entity.getTitle(),
             entity.getContent(),

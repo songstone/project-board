@@ -58,14 +58,14 @@ class ArticleServiceTest {
         SearchType searchType = SearchType.TITLE;
         String searchKeyword = "title";
         Pageable pageable = Pageable.ofSize(20);
-        given(articleRepository.findByTitle(searchKeyword, pageable)).willReturn(Page.empty());
+        given(articleRepository.findByTitleContaining(searchKeyword, pageable)).willReturn(Page.empty());
 
         // When
         Page<ArticleDto> articles = articleService.searchArticles(searchType, searchKeyword, pageable);
 
         // Then
         assertThat(articles).isEmpty();
-        then(articleRepository).should().findByTitle(searchKeyword, pageable);
+        then(articleRepository).should().findByTitleContaining(searchKeyword, pageable);
     }
 
     @DisplayName("게시글 조회 -> 게시글 반환")
@@ -100,7 +100,7 @@ class ArticleServiceTest {
         // Then
         assertThat(t)
             .isInstanceOf(EntityNotFoundException.class)
-            .hasMessage("게시글이 없습니다 - articleId: " + articleId);
+            .hasMessage("해당하는 게시글이 존재하지 않습니다. + articleId : " + articleId);
         then(articleRepository).should().findById(articleId);
     }
 
@@ -156,7 +156,7 @@ class ArticleServiceTest {
         return UserAccount.of(
             "song",
             "password",
-            "song@email.com",
+            "song@eemail.com",
             "Song",
             null
         );
@@ -192,7 +192,7 @@ class ArticleServiceTest {
             1L,
             "song",
             "password",
-            "song@mail.com",
+            "song@email.com",
             "Song",
             "This is memo",
             LocalDateTime.now(),

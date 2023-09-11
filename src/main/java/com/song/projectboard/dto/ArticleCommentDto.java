@@ -19,11 +19,11 @@ public record ArticleCommentDto(
         return new ArticleCommentDto(id, articleId, userAccountDto, content, createdAt, createdBy, modifiedAt, modifiedBy);
     }
 
-    public static ArticleCommentDto from(ArticleComment entity) {
+    public static ArticleCommentDto fromEntity(ArticleComment entity) {
         return new ArticleCommentDto(
             entity.getId(),
             entity.getArticle().getId(),
-            UserAccountDto.from(entity.getUserAccount()),
+            UserAccountDto.fromEntity(entity.getUserAccount()),
             entity.getContent(),
             entity.getCreatedAt(),
             entity.getCreatedBy(),

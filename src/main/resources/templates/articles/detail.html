@@ -10,25 +10,28 @@
     <link href="/css/search-bar.css" rel="stylesheet">
 </head>
 <body>
-    <header th:replace="~{fragment/header :: header}"></header>
+    <header th:replace="~{fragment/header :: header}">
+        헤더
+        <hr>
+    </header>
 
     <main class="container">
         <header class="py-5 text-center">
-            <h1>첫번째 글</h1>
+            <h1 th:text="${article.title}">제목</h1>
         </header>
 
-        <div class="row g-5">
+        <div class="row g-5" th:object="${article}">
             <section class="col-md-5 col-lg-4 order-md-last">
                 <aside>
-                    <p><span class="nick-name">Uno</span></p>
-                    <p><a class="u-url" rel="me" href="mailto:djkehh@gmail.com">uno@mail.com</a></p>
-                    <p><time datetime="2022-01-01T00:00:00">2022-01-01</time></p>
-                    <p>#java</p>
+                    <p><span class="nick-name" th:text="*{nickname}">Song</span></p>
+                    <p><a class="u-url" rel="me" th:href="'mailto:' + *{email}" th:text="*{email}">song@mail.com</a></p>
+                    <p><time th:datetime="*{createdAt}" th:text="*{#temporals.format(createdAt, 'yyyy-MM-dd HH:mm:ss')}">2022-01-01</time></p>
+                    <p th:text="*{hashtag}">#java</p>
                 </aside>
             </section>
 
             <article class="col-md-7 col-lg-8">
-                <p>본문<br><br></p>
+                <p th:text="*{content}">본문<br><br></p>
             </article>
         </div>
 
@@ -46,11 +49,11 @@
                 </form>
 
                 <ul>
-                    <li>
-                        <div>
-                            <time><small>2022-01-01</small></time>
-                            <strong>song</strong>
-                            <p>
+                    <li th:each="comment : ${articleComments}">
+                        <div th:object="${comment}">
+                            <small><time th:datetime="*{createdAt}" th:text="*{#temporals.format(createdAt, 'yyyy-MM-dd HH:mm:ss')}">2022-01-01</time></small>
+                            <strong th:text="*{nickname}">song</strong>
+                            <p th:text="*{content}">
                                 댓글 내용이 들어갈 자리입니다.
                             </p>
                         </div>
