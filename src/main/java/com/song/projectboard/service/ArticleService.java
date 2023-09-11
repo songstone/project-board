@@ -27,27 +27,27 @@ public class ArticleService {
     @Transactional(readOnly = true)
     public Page<ArticleDto> searchArticles(SearchType searchType, String searchKeyword, Pageable pageable) {
         if(searchKeyword == null || searchKeyword.isBlank()) {
-            return articleRepository.findAll(pageable).map(ArticleDto::from);
+            return articleRepository.findAll(pageable).map(ArticleDto::fromEntity);
         }
 
         return switch (searchType) {
             case TITLE ->
-                articleRepository.findByTitleContaining(searchKeyword, pageable).map(ArticleDto::from);
+                articleRepository.findByTitleContaining(searchKeyword, pageable).map(ArticleDto::fromEntity);
             case CONTENT ->
-                articleRepository.findByContentContaining(searchKeyword, pageable).map(ArticleDto::from);
+                articleRepository.findByContentContaining(searchKeyword, pageable).map(ArticleDto::fromEntity);
             case HASHTAG ->
-                articleRepository.findByHashtag(searchKeyword, pageable).map(ArticleDto::from);
+                articleRepository.findByHashtag(searchKeyword, pageable).map(ArticleDto::fromEntity);
             case ID ->
-                articleRepository.findByUserAccount_UserIdContaining(searchKeyword, pageable).map(ArticleDto::from);
+                articleRepository.findByUserAccount_UserIdContaining(searchKeyword, pageable).map(ArticleDto::fromEntity);
             case NICKNAME ->
-                articleRepository.findByUserAccount_NicknameContaining(searchKeyword, pageable).map(ArticleDto::from);
+                articleRepository.findByUserAccount_NicknameContaining(searchKeyword, pageable).map(ArticleDto::fromEntity);
         };
     }
 
     @Transactional(readOnly = true)
     public ArticleWithCommentsDto getArticle(Long articleId) {
         return articleRepository.findById(articleId)
-            .map(ArticleWithCommentsDto::from)
+            .map(ArticleWithCommentsDto::fromEntity)
             .orElseThrow(
                 () -> new EntityNotFoundException("해당하는 게시글이 존재하지 않습니다. + articleId : " + articleId)
             );

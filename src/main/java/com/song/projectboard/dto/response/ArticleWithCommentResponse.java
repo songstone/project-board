@@ -30,7 +30,7 @@ public record ArticleWithCommentResponse(
         return new ArticleWithCommentResponse(id, title, content, hashtag, createdAt, email, nickname, articleCommentResponses);
     }
 
-    public static ArticleWithCommentResponse from(ArticleWithCommentsDto dto) {
+    public static ArticleWithCommentResponse fromDto(ArticleWithCommentsDto dto) {
         String nickname = dto.userAccountDto().nickname();
         if (nickname == null || nickname.isBlank()) {
             nickname = dto.userAccountDto().userId();
@@ -45,7 +45,7 @@ public record ArticleWithCommentResponse(
             dto.userAccountDto().email(),
             nickname,
             dto.articleCommentDtos().stream()
-                .map(ArticleCommentResponse::from)
+                .map(ArticleCommentResponse::fromDto)
                 .collect(Collectors.toCollection(LinkedHashSet::new))
         );
     }

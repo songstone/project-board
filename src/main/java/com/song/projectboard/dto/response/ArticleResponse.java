@@ -17,7 +17,7 @@ public record ArticleResponse(
         return new ArticleResponse(id, title, content, hashtag, createdAt, email, nickname);
     }
 
-    public static ArticleResponse from(ArticleDto dto) {
+    public static ArticleResponse fromDto(ArticleDto dto) {
         String nickname = dto.userAccountDto().nickname();
         if (nickname == null || nickname.isBlank()) {
             nickname = dto.userAccountDto().userId();

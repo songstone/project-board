@@ -20,7 +20,7 @@ public record UserAccountDto(
         return new UserAccountDto(id, userId, userPassword, email, nickname, memo, createdAt, createdBy, modifiedAt, modifiedBy);
     }
 
-    public static UserAccountDto from(UserAccount entity) {
+    public static UserAccountDto fromEntity(UserAccount entity) {
         return new UserAccountDto(
             entity.getId(),
             entity.getUserId(),
