@@ -12,8 +12,6 @@ import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-import java.util.Optional;
-
 @RepositoryRestResource
 public interface ArticleRepository extends
     JpaRepository<Article, Long>,
@@ -30,5 +28,13 @@ public interface ArticleRepository extends
         bindings.bind(root.createdAt).first(DateTimeExpression::eq);
     }
 
-    Page<Article> findByTitle(String searchKeyword, Pageable pageable);
+    Page<Article> findByTitleContaining(String searchKeyword, Pageable pageable);
+
+    Page<Article> findByContentContaining(String searchKeyword, Pageable pageable);
+
+    Page<Article> findByHashtag(String searchKeyword, Pageable pageable);
+
+    Page<Article> findByUserAccount_NicknameContaining(String searchKeyword, Pageable pageable);
+
+    Page<Article> findByUserAccount_UserIdContaining(String searchKeyword, Pageable pageable);
 }
