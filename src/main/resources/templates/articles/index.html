@@ -8,6 +8,7 @@
     <title>게시판 페이지</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <link href="/css/search-bar.css" rel="stylesheet">
+    <link href="/css/table-header.css" rel="stylesheet">
 </head>
 <body>
     <header th:replace="~{fragment/header :: header}"></header>
@@ -50,13 +51,33 @@
             </div>
         </div>
 
-        <table class="table">
+        <table class="table article-table">
             <thead>
-                <tr>
-                    <th class="col-6">제목</th>
-                    <th class="col-2">해시태그</th>
-                    <th class="user-id col">작성자</th>
-                    <th class="created-at col">작성일</th>
+                <tr th:object="${articles}">
+                    <th class="col-6">
+                        <a th:text="'제목'"
+                           th:href="@{/articles(page=${articles.number},sort='title' + (*{sort.getOrderFor('title')} != null
+                        ? (*{sort.getOrderFor('title').direction.name} != 'DESC' ? ',desc' : '')
+                        : ''))}">제목</a>
+                    </th>
+                    <th class="col-2">
+                        <a th:text="'해시태그'"
+                           th:href="@{/articles(page=${articles.number},sort='hashtag' + (*{sort.getOrderFor('hashtag')} != null
+                        ? (*{sort.getOrderFor('hashtag').direction.name} != 'DESC' ? ',desc' : '')
+                        : ''))}">해시태그</a>
+                    </th>
+                    <th class="user-id col">
+                        <a th:text="'작성자'"
+                           th:href="@{/articles(page=${articles.number},sort='userAccount.userId' + (*{sort.getOrderFor('userAccount.userId')} != null
+                        ? (*{sort.getOrderFor('userAccount.userId').direction.name} != 'DESC' ? ',desc' : '')
+                        : ''))}">작성자</a>
+                    </th>
+                    <th class="created-at col">
+                        <a th:text="'작성일'"
+                           th:href="@{/articles(page=${articles.number},sort='createdAt' + (*{sort.getOrderFor('createdAt')} != null
+                        ? (*{sort.getOrderFor('createdAt').direction.name} != 'DESC' ? ',desc' : '')
+                        : ''))}">작성일</a>
+                    </th>
                 </tr>
             </thead>
             <tbody>
