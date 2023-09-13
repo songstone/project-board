@@ -1,6 +1,7 @@
 package com.song.projectboard.controller;
 
 import com.song.projectboard.config.SecurityConfig;
+import com.song.projectboard.domain.type.SearchType;
 import com.song.projectboard.dto.ArticleDto;
 import com.song.projectboard.dto.ArticleWithCommentsDto;
 import com.song.projectboard.dto.UserAccountDto;
@@ -61,6 +62,28 @@ class ArticleControllerTest {
 
         then(articleService).should().searchArticles(eq(null), eq(null), any(Pageable.class));
         then(paginationService).should().getPaginationNumbers(anyInt(), anyInt());
+    }
+
+    @DisplayName("[view][GET] 게시글 리스트 페이지 - 검색 적용")
+    @Test
+    void articles_list_view_search() throws Exception {
+        //given
+        SearchType searchType = SearchType.TITLE;
+        String searchValue = "title";
+        given(articleService.searchArticles(eq(searchType), eq(searchValue), any(Pageable.class))).willReturn(Page.empty());
+        given(paginationService.getPaginationNumbers(anyInt(), anyInt())).willReturn(List.of(0, 1, 2, 3, 4));
+
+        //when & then
+        mvc.perform(get("/articles")
+                .queryParam("searchType", searchType.name())
+                .queryParam("searchValue", searchValue))
+            .andExpect(status().isOk())
+            .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+            .andExpect(view().name("articles/index"))
+            .andExpect(model().attributeExists("articles"))
+            .andExpect(model().attributeExists("searchTypes"));
+
+        then(articleService).should().searchArticles(eq(searchType), eq(searchValue), any(Pageable.class));
     }
 
     @DisplayName("[view][GET] 게시글 상세 페이지")
