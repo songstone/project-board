@@ -17,23 +17,21 @@
         <div class="row">
             <div class="card card-margin search-form">
                 <div class="card-body p-0">
-                    <form id="card search-form">
+                    <form id="card" action="/articles" method="get">
                         <div class="row">
                             <div class="col-12">
                                 <div class="row no-gutters">
                                     <div class="col-lg-3 col-md-3 col-sm-12 p-0">
                                         <label for="search-type" hidden>검색 유형</label>
-                                        <select class="form-control" id="search-type">
-                                            <option>제목</option>
-                                            <option>본문</option>
-                                            <option>id</option>
-                                            <option>닉네임</option>
-                                            <option>해시태그</option>
+                                        <select class="form-control" id="search-type" name="searchType">
+                                            <option th:each="searchType : ${searchTypes}"
+                                                    th:text="${searchType.description}" th:value="${searchType.name}"
+                                                    th:selected="${param.searchType != null && (param.searchType.toString == searchType.name)}">제목</option>
                                         </select>
                                     </div>
                                     <div class="col-lg-8 col-md-6 col-sm-12 p-0">
                                         <label for="search-value" hidden>검색어</label>
-                                        <input type="text" placeholder="검색어..." class="form-control" id="search-value" name="search-value">
+                                        <input type="text" placeholder="검색어..." class="form-control" id="search-value" th:value="${param.searchValue}" name="searchValue">
                                     </div>
                                     <div class="col-lg-1 col-md-3 col-sm-12 p-0">
                                         <button type="submit" class="btn btn-base">
@@ -57,26 +55,30 @@
                     <th class="col-6">
                         <a th:text="'제목'"
                            th:href="@{/articles(page=${articles.number},sort='title' + (*{sort.getOrderFor('title')} != null
-                        ? (*{sort.getOrderFor('title').direction.name} != 'DESC' ? ',desc' : '')
-                        : ''))}">제목</a>
+                        ? (*{sort.getOrderFor('title').direction.name} != 'DESC' ? ',desc' : ''): ''),
+                        searchType=${param.searchType},
+                        searchValue=${param.searchValue})}">제목</a>
                     </th>
                     <th class="col-2">
                         <a th:text="'해시태그'"
                            th:href="@{/articles(page=${articles.number},sort='hashtag' + (*{sort.getOrderFor('hashtag')} != null
-                        ? (*{sort.getOrderFor('hashtag').direction.name} != 'DESC' ? ',desc' : '')
-                        : ''))}">해시태그</a>
+                        ? (*{sort.getOrderFor('hashtag').direction.name} != 'DESC' ? ',desc' : ''): ''),
+                        searchType=${param.searchType},
+                        searchValue=${param.searchValue})}">해시태그</a>
                     </th>
                     <th class="user-id col">
                         <a th:text="'작성자'"
                            th:href="@{/articles(page=${articles.number},sort='userAccount.userId' + (*{sort.getOrderFor('userAccount.userId')} != null
-                        ? (*{sort.getOrderFor('userAccount.userId').direction.name} != 'DESC' ? ',desc' : '')
-                        : ''))}">작성자</a>
+                        ? (*{sort.getOrderFor('userAccount.userId').direction.name} != 'DESC' ? ',desc' : ''): ''),
+                        searchType=${param.searchType},
+                        searchValue=${param.searchValue})}">작성자</a>
                     </th>
                     <th class="created-at col">
                         <a th:text="'작성일'"
                            th:href="@{/articles(page=${articles.number},sort='createdAt' + (*{sort.getOrderFor('createdAt')} != null
-                        ? (*{sort.getOrderFor('createdAt').direction.name} != 'DESC' ? ',desc' : '')
-                        : ''))}">작성일</a>
+                        ? (*{sort.getOrderFor('createdAt').direction.name} != 'DESC' ? ',desc' : ''): ''),
+                        searchType=${param.searchType},
+                        searchValue=${param.searchValue})}">작성일</a>
                     </th>
                 </tr>
             </thead>
@@ -96,19 +98,19 @@
                     <a class="page-link" href="#"
                        th:text="Previous"
                        th:class="'page-link' + (${articles.number} <= 0 ? ' disabled' : '')"
-                       th:href="@{/articles(page=${articles.number - 1})}">Previous</a>
+                       th:href="@{/articles(page=${articles.number - 1}, searchType = ${param.searchType}, searchValue=${param.searchValue})}">Previous</a>
                 </li>
                 <li class="page-item" th:each="paginationNumber : ${paginationNumbers}">
                     <a class="page-link" href=""
                         th:text="${paginationNumber + 1}"
                         th:class="'page-link' + (${articles.number} == ${paginationNumber} ? ' disabled' : '')"
-                        th:href="@{/articles(page=${paginationNumber})}">1</a>
+                        th:href="@{/articles(page=${paginationNumber}, searchType = ${param.searchType}, searchValue=${param.searchValue})}">1</a>
                 </li>
                 <li class="page-item">
                     <a class="page-link" href="#"
                        th:text="Next"
                        th:class="'page-link' + (${articles.number} >= ${articles.totalPages - 1} ? ' disabled' : '')"
-                       th:href="@{/articles(page=${articles.number + 1})}">Next</a>
+                       th:href="@{/articles(page=${articles.number + 1}, searchType = ${param.searchType}, searchValue=${param.searchValue})}">Next</a>
                 </li>
             </ul>
         </nav>
