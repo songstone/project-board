@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -66,6 +67,51 @@ class ArticleServiceTest {
         // Then
         assertThat(articles).isEmpty();
         then(articleRepository).should().findByTitleContaining(searchKeyword, pageable);
+    }
+
+    @DisplayName("검색용 해시 태그 리스트 반환")
+    @Test
+    void hashtagList_for_search() {
+        // given
+        List<String> givenHashtags = List.of("#java", "#spring", "#jpa");
+        given(articleRepository.findAllHashtags()).willReturn(givenHashtags);
+
+        // When
+        List<String> hashtags = articleService.getHashtags();
+
+        // Then
+        assertThat(hashtags).isEqualTo(givenHashtags);
+        then(articleRepository).should().findAllHashtags();
+    }
+
+    @DisplayName("해시 태그 검색어 없이 해시태그를 통한 게시글 검색 -> 빈 페이지 반환")
+    @Test
+    void hashtag_searching_articles_no_searchKeyword() {
+        // given
+        Pageable pageable = Pageable.ofSize(20);
+
+        // When
+        Page<ArticleDto> articles = articleService.searchArticlesHashtag(null, pageable);
+
+        // Then
+        assertThat(articles).isEqualTo(Page.empty(pageable));
+        then(articleRepository).shouldHaveNoInteractions();
+    }
+
+    @DisplayName("해시 태그를 통한 게시글 검색 -> 게시글 리스트 페이지네이션 반환")
+    @Test
+    void hashtag_searching_articles() {
+        // given
+        String  searchTag = "#java";
+        Pageable pageable = Pageable.ofSize(20);
+        given(articleRepository.findByHashtag(searchTag, pageable)).willReturn(Page.empty(pageable));
+
+        // When
+        Page<ArticleDto> articles = articleService.searchArticlesHashtag(searchTag, pageable);
+
+        // Then
+        assertThat(articles).isEqualTo(Page.empty(pageable));
+        then(articleRepository).should().findByHashtag(searchTag, pageable);
     }
 
     @DisplayName("게시글 조회 -> 게시글 반환")

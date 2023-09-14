@@ -86,6 +86,44 @@ class ArticleControllerTest {
         then(articleService).should().searchArticles(eq(searchType), eq(searchValue), any(Pageable.class));
     }
 
+    @DisplayName("[view][GET] 해시 태그 검색 페이지 - 검색어 없을 때")
+    @Test
+    void articles_list_view_search_using_hashtag_no_keyword() throws Exception {
+        //given
+        given(articleService.searchArticlesHashtag(eq(null), any(Pageable.class))).willReturn(Page.empty());
+
+        //when & then
+        mvc.perform(get("/articles/search-hashtag"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+            .andExpect(view().name("articles/search-hashtag"))
+            .andExpect(model().attribute("articles", Page.empty()))
+            .andExpect(model().attributeExists("hashtags"))
+            .andExpect(model().attributeExists("paginationNumbers"));
+
+        then(articleService).should().searchArticlesHashtag(eq(null), any(Pageable.class));
+    }
+
+    @DisplayName("[view][GET] 해시 태그 검색 페이지 - 검색어 존재 할 때")
+    @Test
+    void articles_list_view_search_using_hashtag() throws Exception {
+        //given
+        String searchTag = "#java";
+        given(articleService.searchArticlesHashtag(eq(searchTag), any(Pageable.class))).willReturn(Page.empty());
+
+        //when & then
+        mvc.perform(get("/articles/search-hashtag")
+                .queryParam("searchValue", searchTag))
+            .andExpect(status().isOk())
+            .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+            .andExpect(view().name("articles/search-hashtag"))
+            .andExpect(model().attribute("articles", Page.empty()))
+            .andExpect(model().attributeExists("hashtags"))
+            .andExpect(model().attributeExists("paginationNumbers"));
+
+        then(articleService).should().searchArticlesHashtag(eq(searchTag), any(Pageable.class));
+    }
+
     @DisplayName("[view][GET] 게시글 상세 페이지")
     @Test
     void articles_select_view() throws Exception {
