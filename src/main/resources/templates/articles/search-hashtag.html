@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Uno Kim">
+    <title>해시태그 검색</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link href="/css/table-header.css" rel="stylesheet">
+</head>
+
+<body>
+    <header th:replace="~{fragment/header :: header}"></header>
+
+    <main class="container">
+        <header class="py-5 text-center">
+            <h1>Hashtags</h1>
+        </header>
+
+        <section class="row">
+            <div id="hashtags" class="col-9 d-flex flex-wrap justify-content-evenly">
+                <div class="p-2">
+                    <h2 class="text-center lh-lg font-monospace" th:each="hashtag : ${hashtags}">
+                        <a href="#"
+                           th:text="${hashtag}"
+                           th:href="@{/articles/search-hashtag(
+                           page=${param.page},
+                           sort=${param.sort},
+                           searchValue=${hashtag})}">#java</a>
+                    </h2>
+                </div>
+            </div>
+        </section>
+
+        <hr>
+
+        <table class="table article-table">
+            <thead>
+            <tr th:object="${articles}">
+                <th class="col-6">
+                    <a th:text="'제목'"
+                       th:href="@{/articles/search-hashtag(page=${articles.number},sort='title' + (*{sort.getOrderFor('title')} != null
+                        ? (*{sort.getOrderFor('title').direction.name} != 'DESC' ? ',desc' : ''): ''),
+                        searchValue=${param.searchValue})}">제목</a>
+                </th>
+                <th class="col-2">
+                    <a th:text="'해시태그'"
+                       th:href="@{/articles/search-hashtag(page=${articles.number},sort='hashtag' + (*{sort.getOrderFor('hashtag')} != null
+                        ? (*{sort.getOrderFor('hashtag').direction.name} != 'DESC' ? ',desc' : ''): ''),
+                        searchValue=${param.searchValue})}">해시태그</a>
+                </th>
+                <th class="user-id col">
+                    <a th:text="'작성자'"
+                       th:href="@{/articles/search-hashtag(page=${articles.number},sort='userAccount.userId' + (*{sort.getOrderFor('userAccount.userId')} != null
+                        ? (*{sort.getOrderFor('userAccount.userId').direction.name} != 'DESC' ? ',desc' : ''): ''),
+                        searchValue=${param.searchValue})}">작성자</a>
+                </th>
+                <th class="created-at col">
+                    <a th:text="'작성일'"
+                       th:href="@{/articles/search-hashtag(page=${articles.number},sort='createdAt' + (*{sort.getOrderFor('createdAt')} != null
+                        ? (*{sort.getOrderFor('createdAt').direction.name} != 'DESC' ? ',desc' : ''): ''),
+                        searchValue=${param.searchValue})}">작성일</a>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="article, articleStat : ${articles}">
+                <td><a th:href="@{'/articles/' + ${article.id}}" th:text="${article.title}">title</a></td>
+                <td th:text="${article.hashtag}">#hashtag</td>
+                <td th:text="${article.nickname}">nickname</td>
+                <td th:datetime="${article.createdAt}" th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd')}">생성날짜</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                <li class="page-item">
+                    <a class="page-link" href="#"
+                       th:text="Previous"
+                       th:class="'page-link' + (${articles.number} <= 0 ? ' disabled' : '')"
+                       th:href="@{/articles/search-hashtag(page=${articles.number - 1}, searchValue=${param.searchValue})}">Previous</a>
+                </li>
+                <li class="page-item" th:each="paginationNumber : ${paginationNumbers}">
+                    <a class="page-link" href=""
+                       th:text="${paginationNumber + 1}"
+                       th:class="'page-link' + (${articles.number} == ${paginationNumber} ? ' disabled' : '')"
+                       th:href="@{/articles/search-hashtag(page=${paginationNumber}, searchValue=${param.searchValue})}">1</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#"
+                       th:text="Next"
+                       th:class="'page-link' + (${articles.number} >= ${articles.totalPages - 1} ? ' disabled' : '')"
+                       th:href="@{/articles/search-hashtag(page=${articles.number + 1}, searchValue=${param.searchValue})}">Next</a>
+                </li>
+            </ul>
+        </nav>
+
+    </main>
+
+    <footer th:replace="fragment/footer :: footer"></footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+</body>
+</html>
