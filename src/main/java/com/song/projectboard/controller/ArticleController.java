@@ -32,8 +32,7 @@ public class ArticleController {
     public String articles(@RequestParam(required = false) SearchType searchType,
                            @RequestParam(required = false) String searchValue,
                            @PageableDefault(size = 15, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-                           ModelMap map)
-    {
+                           ModelMap map) {
         Page<ArticleResponse> articles = articleService.searchArticles(searchType, searchValue, pageable).map(ArticleResponse::fromDto);
         List<Integer> paginationNumbers = paginationService.getPaginationNumbers(articles.getNumber(), articles.getTotalPages());
 
@@ -51,5 +50,23 @@ public class ArticleController {
         map.addAttribute("articleComments", articleResponse.articleCommentResponses());
 
         return "articles/detail";
+    }
+
+    @GetMapping("/search-hashtag")
+    public String searchHashtag(
+        @RequestParam(required = false) String searchValue,
+        @PageableDefault(size = 15, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+        ModelMap map
+    ) {
+        Page<ArticleResponse> articles = articleService.searchArticlesHashtag(searchValue, pageable).map(ArticleResponse::fromDto);
+        List<Integer> paginationNumbers = paginationService.getPaginationNumbers(articles.getNumber(), articles.getTotalPages());
+        List<String> hashtags = articleService.getHashtags();
+
+        map.addAttribute("articles", articles);
+        map.addAttribute("hashtags", hashtags);
+        map.addAttribute("paginationNumbers", paginationNumbers);
+        map.addAttribute("searchType", SearchType.HASHTAG);
+
+        return "articles/search-hashtag";
     }
 }
