@@ -21,7 +21,7 @@ public class UserAccount extends AuditingFields {
     private Long id;
 
     @Setter
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 50, unique = true)
     private String userId;
 
     @Setter
