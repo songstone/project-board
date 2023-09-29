@@ -1,8 +1,7 @@
 package com.song.projectboard.controller;
 
 import com.song.projectboard.config.SecurityConfig;
-import com.song.projectboard.domain.type.SearchType;
-import com.song.projectboard.dto.ArticleDto;
+import com.song.projectboard.domain.constant.SearchType;
 import com.song.projectboard.dto.ArticleWithCommentsDto;
 import com.song.projectboard.dto.UserAccountDto;
 import com.song.projectboard.service.ArticleService;
@@ -129,7 +128,7 @@ class ArticleControllerTest {
     void articles_select_view() throws Exception {
         //given
         Long articleId = 1L;
-        given(articleService.getArticle(articleId)).willReturn(createArticleWithCommentDto());
+        given(articleService.getArticleWithComments(articleId)).willReturn(createArticleWithCommentDto());
 
         //when & then
         mvc.perform(get("/articles/" + articleId))
@@ -139,7 +138,7 @@ class ArticleControllerTest {
             .andExpect(model().attributeExists("article"))
             .andExpect(model().attributeExists("articleComments"));
 
-        then(articleService).should().getArticle(articleId);
+        then(articleService).should().getArticleWithComments(articleId);
     }
 
     private ArticleWithCommentsDto createArticleWithCommentDto() {
