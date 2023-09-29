@@ -20,10 +20,11 @@
         </header>
 
         <section class="row">
-            <div id="hashtags" class="col-9 d-flex flex-wrap justify-content-evenly">
+            <div id="hashtags" class="col-9 d-flex flex-wrap justify-content-evenly" th:remove="all-but-first">
                 <div class="p-2">
-                    <h2 class="text-center lh-lg font-monospace" th:each="hashtag : ${hashtags}">
+                    <h2 class="text-center lh-lg font-monospace" style="display: inline;" th:each="hashtag : ${hashtags}">
                         <a href="#"
+                           th:class="text-reset"
                            th:text="${hashtag}"
                            th:href="@{/articles/search-hashtag(
                            page=${param.page},
