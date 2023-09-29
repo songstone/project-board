@@ -1,6 +1,9 @@
 package com.song.projectboard.controller;
 
-import com.song.projectboard.domain.type.SearchType;
+import com.song.projectboard.domain.constant.FormStatus;
+import com.song.projectboard.domain.constant.SearchType;
+import com.song.projectboard.dto.UserAccountDto;
+import com.song.projectboard.dto.request.ArticleRequest;
 import com.song.projectboard.dto.response.ArticleResponse;
 import com.song.projectboard.dto.response.ArticleWithCommentResponse;
 import com.song.projectboard.service.ArticleService;
@@ -12,10 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -45,7 +45,7 @@ public class ArticleController {
 
     @GetMapping("/{articleId}")
     public String article(ModelMap map, @PathVariable Long articleId) {
-        ArticleWithCommentResponse articleResponse = ArticleWithCommentResponse.fromDto(articleService.getArticle(articleId));
+        ArticleWithCommentResponse articleResponse = ArticleWithCommentResponse.fromDto(articleService.getArticleWithComments(articleId));
         map.addAttribute("article", articleResponse);
         map.addAttribute("articleComments", articleResponse.articleCommentResponses());
 
@@ -53,7 +53,7 @@ public class ArticleController {
     }
 
     @GetMapping("/search-hashtag")
-    public String searchHashtag(
+    public String searchArticleHashtag(
         @RequestParam(required = false) String searchValue,
         @PageableDefault(size = 15, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
         ModelMap map
@@ -68,5 +68,47 @@ public class ArticleController {
         map.addAttribute("searchType", SearchType.HASHTAG);
 
         return "articles/search-hashtag";
+    }
+
+    @GetMapping("/form")
+    public String articleForm(ModelMap map) {
+        map.addAttribute("formStatus", FormStatus.CREATE);
+
+        return "articles/form";
+    }
+
+    @PostMapping ("/form")
+    public String postNewArticle(ArticleRequest articleRequest) {
+        articleService.saveArticle(articleRequest.toDto(UserAccountDto.of(
+            "song", "song1234", "song@mail.com", "Song", "memo", null, null, null, null
+        )));
+
+        return "redirect:/articles";
+    }
+
+    @GetMapping("/{articleId}/form")
+    public String updateArticleForm(@PathVariable Long articleId, ModelMap map) {
+        ArticleResponse article = ArticleResponse.fromDto(articleService.getArticle(articleId));
+
+        map.addAttribute("article", article);
+        map.addAttribute("formStatus", FormStatus.UPDATE);
+
+        return "articles/form";
+    }
+
+    @PostMapping ("/{articleId}/form")
+    public String updateArticle(@PathVariable Long articleId, ArticleRequest articleRequest) {
+        articleService.updateArticle(articleId, articleRequest.toDto(UserAccountDto.of(
+            "song", "song1234", "song@mail.com", "Song", "memo", null, null, null, null
+        )));
+
+        return "redirect:/articles/" + articleId;
+    }
+
+    @PostMapping("/{articleId}/delete")
+    public String deleteArticle(@PathVariable Long articleId) {
+        articleService.deleteArticle(articleId);
+
+        return "redirect:/articles";
     }
 }

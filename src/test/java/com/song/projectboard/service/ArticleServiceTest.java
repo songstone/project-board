@@ -2,11 +2,12 @@ package com.song.projectboard.service;
 
 import com.song.projectboard.domain.Article;
 import com.song.projectboard.domain.UserAccount;
-import com.song.projectboard.domain.type.SearchType;
+import com.song.projectboard.domain.constant.SearchType;
 import com.song.projectboard.dto.ArticleDto;
 import com.song.projectboard.dto.ArticleWithCommentsDto;
 import com.song.projectboard.dto.UserAccountDto;
 import com.song.projectboard.repository.ArticleRepository;
+import com.song.projectboard.repository.UserAccountRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,6 +36,9 @@ class ArticleServiceTest {
 
     @Mock
     private ArticleRepository articleRepository;
+
+    @Mock
+    private UserAccountRepository userAccountRepository;
 
 
     @DisplayName("키워드 없이 게시글 검색 -> 게시글 리스트 페이지네이션 반환")
@@ -123,7 +127,7 @@ class ArticleServiceTest {
         given(articleRepository.findById(articleId)).willReturn(Optional.of(article));
 
         //when
-        ArticleWithCommentsDto dto = articleService.getArticle(articleId);
+        ArticleWithCommentsDto dto = articleService.getArticleWithComments(articleId);
 
         //then
         assertThat(dto)
@@ -141,7 +145,7 @@ class ArticleServiceTest {
         given(articleRepository.findById(articleId)).willReturn(Optional.empty());
 
         // When
-        Throwable t = catchThrowable(() -> articleService.getArticle(articleId));
+        Throwable t = catchThrowable(() -> articleService.getArticleWithComments(articleId));
 
         // Then
         assertThat(t)
@@ -156,7 +160,7 @@ class ArticleServiceTest {
         //given
         ArticleDto dto = createArticleDto();
         given(articleRepository.save(any(Article.class))).willReturn(createArticle());
-
+        given(userAccountRepository.findByUserId(anyString())).willReturn(Optional.of(createUserAccount()));
         //when
         articleService.saveArticle(dto);
 
@@ -173,7 +177,7 @@ class ArticleServiceTest {
         given(articleRepository.getReferenceById(dto.id())).willReturn(article);
 
         //when
-        articleService.updateArticle(dto);
+        articleService.updateArticle(dto.id(), dto);
 
         //then
         assertThat(article)

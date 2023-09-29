@@ -1,4 +1,4 @@
-package com.song.projectboard.domain.type;
+package com.song.projectboard.domain.constant;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

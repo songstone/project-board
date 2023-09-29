@@ -17,7 +17,7 @@
         <div class="row">
             <div class="card card-margin search-form">
                 <div class="card-body p-0">
-                    <form id="card" action="/articles" method="get">
+                    <form id="card" th:action="@{/articles}" th:method="get">
                         <div class="row">
                             <div class="col-12">
                                 <div class="row no-gutters">
@@ -49,71 +49,82 @@
             </div>
         </div>
 
-        <table class="table article-table">
-            <thead>
-                <tr th:object="${articles}">
-                    <th class="col-6">
-                        <a th:text="'제목'"
-                           th:href="@{/articles(page=${articles.number},sort='title' + (*{sort.getOrderFor('title')} != null
-                        ? (*{sort.getOrderFor('title').direction.name} != 'DESC' ? ',desc' : ''): ''),
-                        searchType=${param.searchType},
-                        searchValue=${param.searchValue})}">제목</a>
-                    </th>
-                    <th class="col-2">
-                        <a th:text="'해시태그'"
-                           th:href="@{/articles(page=${articles.number},sort='hashtag' + (*{sort.getOrderFor('hashtag')} != null
-                        ? (*{sort.getOrderFor('hashtag').direction.name} != 'DESC' ? ',desc' : ''): ''),
-                        searchType=${param.searchType},
-                        searchValue=${param.searchValue})}">해시태그</a>
-                    </th>
-                    <th class="user-id col">
-                        <a th:text="'작성자'"
-                           th:href="@{/articles(page=${articles.number},sort='userAccount.userId' + (*{sort.getOrderFor('userAccount.userId')} != null
-                        ? (*{sort.getOrderFor('userAccount.userId').direction.name} != 'DESC' ? ',desc' : ''): ''),
-                        searchType=${param.searchType},
-                        searchValue=${param.searchValue})}">작성자</a>
-                    </th>
-                    <th class="created-at col">
-                        <a th:text="'작성일'"
-                           th:href="@{/articles(page=${articles.number},sort='createdAt' + (*{sort.getOrderFor('createdAt')} != null
-                        ? (*{sort.getOrderFor('createdAt').direction.name} != 'DESC' ? ',desc' : ''): ''),
-                        searchType=${param.searchType},
-                        searchValue=${param.searchValue})}">작성일</a>
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="article, articleStat : ${articles}">
-                    <td><a th:href="@{'/articles/' + ${article.id}}" th:text="${article.title}">title</a></td>
-                    <td th:text="${article.hashtag}">#hashtag</td>
-                    <td th:text="${article.nickname}">nickname</td>
-                    <td th:datetime="${article.createdAt}" th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd')}">생성날짜</td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="row">
+            <table class="table article-table">
+                <thead>
+                    <tr th:object="${articles}">
+                        <th class="col-6">
+                            <a th:text="'제목'"
+                               th:href="@{/articles(page=${articles.number},sort='title' + (*{sort.getOrderFor('title')} != null
+                            ? (*{sort.getOrderFor('title').direction.name} != 'DESC' ? ',desc' : ''): ''),
+                            searchType=${param.searchType},
+                            searchValue=${param.searchValue})}">제목</a>
+                        </th>
+                        <th class="col-2">
+                            <a th:text="'해시태그'"
+                               th:href="@{/articles(page=${articles.number},sort='hashtag' + (*{sort.getOrderFor('hashtag')} != null
+                            ? (*{sort.getOrderFor('hashtag').direction.name} != 'DESC' ? ',desc' : ''): ''),
+                            searchType=${param.searchType},
+                            searchValue=${param.searchValue})}">해시태그</a>
+                        </th>
+                        <th class="user-id">
+                            <a th:text="'작성자'"
+                               th:href="@{/articles(page=${articles.number},sort='userAccount.userId' + (*{sort.getOrderFor('userAccount.userId')} != null
+                            ? (*{sort.getOrderFor('userAccount.userId').direction.name} != 'DESC' ? ',desc' : ''): ''),
+                            searchType=${param.searchType},
+                            searchValue=${param.searchValue})}">작성자</a>
+                        </th>
+                        <th class="created-at">
+                            <a th:text="'작성일'"
+                               th:href="@{/articles(page=${articles.number},sort='createdAt' + (*{sort.getOrderFor('createdAt')} != null
+                            ? (*{sort.getOrderFor('createdAt').direction.name} != 'DESC' ? ',desc' : ''): ''),
+                            searchType=${param.searchType},
+                            searchValue=${param.searchValue})}">작성일</a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="article, articleStat : ${articles}">
+                        <td><a th:href="@{'/articles/' + ${article.id}}" th:text="${article.title}">title</a></td>
+                        <td th:text="${article.hashtag}">#hashtag</td>
+                        <td th:text="${article.nickname}">nickname</td>
+                        <td th:datetime="${article.createdAt}" th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd')}">생성날짜</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-        <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-center">
-                <li class="page-item">
-                    <a class="page-link" href="#"
-                       th:text="Previous"
-                       th:class="'page-link' + (${articles.number} <= 0 ? ' disabled' : '')"
-                       th:href="@{/articles(page=${articles.number - 1}, searchType = ${param.searchType}, searchValue=${param.searchValue})}">Previous</a>
-                </li>
-                <li class="page-item" th:each="paginationNumber : ${paginationNumbers}">
-                    <a class="page-link" href=""
-                        th:text="${paginationNumber + 1}"
-                        th:class="'page-link' + (${articles.number} == ${paginationNumber} ? ' disabled' : '')"
-                        th:href="@{/articles(page=${paginationNumber}, searchType = ${param.searchType}, searchValue=${param.searchValue})}">1</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="#"
-                       th:text="Next"
-                       th:class="'page-link' + (${articles.number} >= ${articles.totalPages - 1} ? ' disabled' : '')"
-                       th:href="@{/articles(page=${articles.number + 1}, searchType = ${param.searchType}, searchValue=${param.searchValue})}">Next</a>
-                </li>
-            </ul>
-        </nav>
+        <div class="row">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a class="btn btn-primary me-md-2" role="button" id="write-article"
+                    th:href="@{/articles/form}">글쓰기</a>
+            </div>
+        </div>
+
+        <div class="row">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item">
+                        <a class="page-link" href="#"
+                           th:text="Previous"
+                           th:class="'page-link' + (${articles.number} <= 0 ? ' disabled' : '')"
+                           th:href="@{/articles(page=${articles.number - 1}, searchType = ${param.searchType}, searchValue=${param.searchValue})}">Previous</a>
+                    </li>
+                    <li class="page-item" th:each="paginationNumber : ${paginationNumbers}">
+                        <a class="page-link" href=""
+                            th:text="${paginationNumber + 1}"
+                            th:class="'page-link' + (${articles.number} == ${paginationNumber} ? ' disabled' : '')"
+                            th:href="@{/articles(page=${paginationNumber}, searchType = ${param.searchType}, searchValue=${param.searchValue})}">1</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#"
+                           th:text="Next"
+                           th:class="'page-link' + (${articles.number} >= ${articles.totalPages - 1} ? ' disabled' : '')"
+                           th:href="@{/articles(page=${articles.number + 1}, searchType = ${param.searchType}, searchValue=${param.searchValue})}">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </main>
 
     <footer th:replace="fragment/footer :: footer"></footer>
