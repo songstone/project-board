@@ -36,7 +36,7 @@
         </div>
 
         <div class="row g-5" id="article-buttons">
-            <form id="delete-article-form" th:action="'/articles/' + ${article.id} + '/form'" th:method="post">
+            <form id="delete-article-form" th:action="'/articles/' + ${article.id} + '/delete'" th:method="post">
                 <div class="pb-5 d-grid gap-2 d-md-block">
                     <a class="btn btn-success me-md-2" role="button" id="update-article"
                         th:href="'/articles/' + ${article.id} + '/form'">수정</a>
@@ -47,10 +47,11 @@
 
         <div class="row g-5">
             <section>
-                <form class="row g-3">
+                <form class="row g-3" th:action="@{/comments/new}" th:method="post">
+                    <input type="hidden" th:name="articleId" th:value="${article.id}">
                     <div class="col-md-9 col-lg-8">
                         <label for="comment-textbox" hidden>댓글</label>
-                        <textarea class="form-control" id="comment-textbox" placeholder="댓글 쓰기.." rows="3"></textarea>
+                        <textarea class="form-control" id="comment-textbox" th:name="content" placeholder="댓글 쓰기.." rows="3"></textarea>
                     </div>
                     <div class="col-md-3 col-lg-4">
                         <label for="comment-submit" hidden>댓글 쓰기</label>
@@ -60,13 +61,21 @@
 
                 <ul id="article-comments" class="row col-md-10 col-lg-8 pt-3">
                     <li th:each="comment : ${articleComments}">
-                        <div class="row" th:object="${comment}">
-                            <small><time th:datetime="*{createdAt}" th:text="*{#temporals.format(createdAt, 'yyyy-MM-dd HH:mm:ss')}">2022-01-01</time></small>
-                            <strong th:text="*{nickname}">song</strong>
-                            <p th:text="*{content}">
-                                댓글 내용이 들어갈 자리입니다.
-                            </p>
-                        </div>
+                        <form th:object="${comment}" th:action="'/comments/' + ${comment.id} + '/delete'" th:method="post">
+                            <input type="hidden" th:name="articleId" th:value="${article.id}">
+                            <div class="row">
+                                <div class="col-md-18 col-lg-9">
+                                    <strong th:text="*{nickname}">song</strong>
+                                    <small><time th:datetime="*{createdAt}" th:text="*{#temporals.format(createdAt, 'yyyy-MM-dd HH:mm:ss')}">2022-01-01</time></small>
+                                    <p th:text="*{content}">
+                                        댓글 내용이 들어갈 자리입니다.
+                                    </p>
+                                </div>
+                                <div class="col-2 mb-3">
+                                    <button type="submit" class="btn btn-outline-danger" id="delete-comment-button">삭제</button>
+                                </div>
+                            </div>
+                        </form>
                     </li>
                 </ul>
             </section>
