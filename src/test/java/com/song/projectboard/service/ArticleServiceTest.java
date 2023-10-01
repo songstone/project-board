@@ -175,6 +175,8 @@ class ArticleServiceTest {
         Article article = createArticle();
         ArticleDto dto = createArticleDto("new title", "new content", "#tag");
         given(articleRepository.getReferenceById(dto.id())).willReturn(article);
+        given(userAccountRepository.findByUserId(dto.userAccountDto().userId()))
+            .willReturn(Optional.of(dto.userAccountDto().toEntity()));
 
         //when
         articleService.updateArticle(dto.id(), dto);
@@ -185,6 +187,7 @@ class ArticleServiceTest {
             .hasFieldOrPropertyWithValue("content", dto.content())
             .hasFieldOrPropertyWithValue("hashtag", dto.hashtag());
         then(articleRepository).should().getReferenceById(dto.id());
+        then(userAccountRepository).should().findByUserId(dto.userAccountDto().userId());
     }
 
     @DisplayName("게시글 삭제")
@@ -192,13 +195,14 @@ class ArticleServiceTest {
     void deleteArticle() {
         //given
         Long articleId = 1L;
-        willDoNothing().given(articleRepository).deleteById(articleId);
+        String userId = "songTest";
+        willDoNothing().given(articleRepository).deleteByIdAndUserAccount_UserId(articleId, userId);
 
         //when
-        articleService.deleteArticle(1L);
+        articleService.deleteArticle(1L, userId);
 
         //then
-        then(articleRepository).should().deleteById(articleId);
+        then(articleRepository).should().deleteByIdAndUserAccount_UserId(articleId, userId);
     }
 
 
@@ -206,7 +210,7 @@ class ArticleServiceTest {
         return UserAccount.of(
             "song",
             "password",
-            "song@eemail.com",
+            "song@email.com",
             "Song",
             null
         );
@@ -242,12 +246,7 @@ class ArticleServiceTest {
             "song",
             "password",
             "song@email.com",
-            "Song",
-            "This is memo",
-            LocalDateTime.now(),
-            "song",
-            LocalDateTime.now(),
-            "song"
+            "Song"
         );
     }
 }

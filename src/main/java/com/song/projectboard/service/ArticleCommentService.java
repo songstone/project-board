@@ -49,13 +49,13 @@ public class ArticleCommentService {
     public void updateArticleComment(ArticleCommentDto dto) {
         try {
             ArticleComment articleComment = articleCommentRepository.getReferenceById(dto.id());
-            if(dto.content() != null) articleComment.setContent(dto.content());
+            if (dto.content() != null) articleComment.setContent(dto.content());
         } catch (EntityNotFoundException e) {
             log.warn("해당하는 댓글이 존재하지 않습니다. articleCommentId : {}", dto.id());
         }
     }
 
-    public void deleteArticleComment(Long articleCommentId) {
-        articleCommentRepository.deleteById(articleCommentId);
+    public void deleteArticleComment(Long articleCommentId, String userId) {
+        articleCommentRepository.deleteByIdAndUserAccount_UserId(articleCommentId, userId);
     }
 }

@@ -3,6 +3,7 @@ package com.song.projectboard.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Getter
 @ToString
@@ -49,5 +50,18 @@ public class UserAccount extends AuditingFields {
 
     public static UserAccount of(String userId, String userPassword, String email, String nickname, String memo) {
         return new UserAccount(userId, userPassword, email, nickname, memo);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        UserAccount that = (UserAccount) object;
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getUserId(), that.getUserId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getUserId());
     }
 }

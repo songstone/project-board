@@ -75,16 +75,21 @@ public class ArticleService {
     public void updateArticle(Long articleId, ArticleDto dto) {
         try {
             Article article = articleRepository.getReferenceById(articleId);
-            if(dto.title() != null) { article.setTitle(dto.title()); }
-            if(dto.content() != null) { article.setContent(dto.content()); }
-            if(dto.hashtag() != null) { article.setHashtag(dto.hashtag()); }
+            UserAccount userAccount = userAccountRepository.findByUserId(dto.userAccountDto().userId())
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 회원이 존재하지 않습니다. + userId : " + dto.userAccountDto().userId()));
+
+            if(article.getUserAccount().equals(userAccount)) {
+                if(dto.title() != null) { article.setTitle(dto.title()); }
+                if(dto.content() != null) { article.setContent(dto.content()); }
+                if(dto.hashtag() != null) { article.setHashtag(dto.hashtag()); }
+            }
         } catch (EntityNotFoundException e) {
-            log.warn("해당하는 게시글이 없습니다. 수정에 실패 했습니다. articleId : {}", dto.id());
+            log.warn("게시글을 수정 할 수 없습니다. - {}", e.getMessage());
         }
     }
 
-    public void deleteArticle(Long articleId) {
-        articleRepository.deleteById(articleId);
+    public void deleteArticle(Long articleId, String userId) {
+        articleRepository.deleteByIdAndUserAccount_UserId(articleId, userId);
     }
 
     @Transactional(readOnly = true)

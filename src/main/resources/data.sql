@@ -1,8 +1,7 @@
 -- 테스트 계정
-insert into user_account (user_id, user_password, nickname, email, memo, created_at, created_by, modified_at,
-                          modified_by)
-values ('song', 'song1234', 'song', 'song@naver.com', 'bla.. bla.. bla..', now(), 'song', now(), 'song')
-;
+insert into user_account (user_id, user_password, nickname, email, memo, created_at, created_by, modified_at, modified_by)
+values ('song', '{noop}song1234', 'song', 'song@naver.com', 'bla.. bla.. bla..', now(), 'song', now(), 'song'),
+('song2', '{noop}song21234', 'song2', 'song2@naver.com', 'bla.. bla.. bla..', now(), 'song2', now(), 'song2');
 
 -- 123 게시글
 insert into article (user_account_id, title, content, hashtag, created_by, modified_by, created_at, modified_at)
