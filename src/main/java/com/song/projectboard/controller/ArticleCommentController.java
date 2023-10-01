@@ -1,6 +1,5 @@
 package com.song.projectboard.controller;
 
-import com.song.projectboard.dto.UserAccountDto;
 import com.song.projectboard.dto.request.ArticleCommentRequest;
 import com.song.projectboard.dto.security.BoardPrincipal;
 import com.song.projectboard.service.ArticleCommentService;
