@@ -1,6 +1,8 @@
 package com.song.projectboard.service;
 
+import com.song.projectboard.domain.Article;
 import com.song.projectboard.domain.ArticleComment;
+import com.song.projectboard.domain.UserAccount;
 import com.song.projectboard.dto.ArticleCommentDto;
 import com.song.projectboard.repository.ArticleCommentRepository;
 import com.song.projectboard.repository.ArticleRepository;
@@ -18,6 +20,7 @@ import java.util.List;
 @Transactional
 @Service
 public class ArticleCommentService {
+    private final UserAccountRepository userAccountRepository;
 
     private final ArticleRepository articleRepository;
     private final ArticleCommentRepository articleCommentRepository;
@@ -31,9 +34,14 @@ public class ArticleCommentService {
 
     public void saveArticleComment(ArticleCommentDto dto) {
         try {
-            articleCommentRepository.save(dto.toEntity(articleRepository.getReferenceById(dto.articleId())));
+            Article article = articleRepository.getReferenceById(dto.articleId());
+
+            UserAccount userAccount = userAccountRepository.findByUserId(dto.userAccountDto().userId())
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 회원 정보가 없습니다. userId" + dto.userAccountDto().userId()));
+
+            articleCommentRepository.save(dto.toEntity(article, userAccount));
         } catch (EntityNotFoundException e) {
-            log.warn("해당하는 게시글이 존재하지 않습니다. articleId : {}", dto.articleId());
+            log.warn("댓글 저장 실패, 필요 정보를 찾을 수 없습니다. - {} ", e.getMessage());
         }
     }
 
