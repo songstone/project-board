@@ -7,6 +7,7 @@ import com.song.projectboard.dto.ArticleCommentDto;
 import com.song.projectboard.dto.UserAccountDto;
 import com.song.projectboard.repository.ArticleCommentRepository;
 import com.song.projectboard.repository.ArticleRepository;
+import com.song.projectboard.repository.UserAccountRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -32,6 +34,8 @@ class ArticleCommentServiceTest {
     private ArticleRepository articleRepository;
     @Mock
     private ArticleCommentRepository articleCommentRepository;
+    @Mock
+    private UserAccountRepository userAccountRepository;
 
     @DisplayName("게시글 댓글 리스트")
     @Test
@@ -58,6 +62,7 @@ class ArticleCommentServiceTest {
         // Given
         ArticleCommentDto dto = createArticleCommentDto("댓글");
         given(articleRepository.getReferenceById(dto.articleId())).willReturn(createArticle());
+        given(userAccountRepository.findByUserId(dto.userAccountDto().userId())).willReturn(Optional.of(createUserAccount()));
         given(articleCommentRepository.save(any(ArticleComment.class))).willReturn(null);
 
         // When
@@ -65,6 +70,7 @@ class ArticleCommentServiceTest {
 
         // Then
         then(articleRepository).should().getReferenceById(dto.articleId());
+        then(userAccountRepository).should().findByUserId(dto.userAccountDto().userId());
         then(articleCommentRepository).should().save(any(ArticleComment.class));
     }
 
