@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -97,7 +97,7 @@
         <div class="row">
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                 <a class="btn btn-primary me-md-2" role="button" id="write-article"
-                    th:href="@{/articles/form}">글쓰기</a>
+                    th:href="@{/articles/form}" sec:authorize="isAuthenticated()">글쓰기</a>
             </div>
         </div>
 
